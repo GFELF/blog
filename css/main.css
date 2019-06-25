@@ -1822,7 +1822,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #17cd70;
+  background: #d7ed6e;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -2661,7 +2661,8 @@ embed {
   display: inline-block;
 }
 body {
-  background: url("/images/background-leaf.jpg");
+  background-image: url("/images/background-leaf.jpg");
   background-repeat: no-repeat;
   background-color: #f6f6f6;
+  background-size: 420px;
 }
