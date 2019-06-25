@@ -24,6 +24,13 @@ tags: ts
         meat: string,
     }
    ```
+   2. 类型断言的使用
+   下面的代码不会提示错误，在运行时才会报错
+   ```typescript
+    let str;
+    let foo: number = (str as string).length;
+    let foo2: number = (<string>str).length;
+   ```
 #### 类的设计和拆分
 #### 小技巧
   1. 在 /** */ 里输入 @ 可以看到丰富的注释选择进行清晰的注释
