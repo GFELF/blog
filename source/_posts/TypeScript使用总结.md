@@ -9,7 +9,7 @@ tags: ts
 <!-- more -->
 #### 遇到的坑
 #### 类型的使用
-  1. 联合类型的使用
+1. 联合类型的使用
    Dinner中要么有fish要么有meat时
    ```typescript
     // good
@@ -24,7 +24,7 @@ tags: ts
         meat: string,
     }
    ```
-   2. 类型断言的使用
+2. 类型断言的使用
    下面的代码不会提示错误，在运行时才会报错
    ```typescript
     let str;

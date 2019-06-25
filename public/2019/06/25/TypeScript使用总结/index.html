@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="GFELF">
 <meta property="og:description" content="最近在项目中比较多的用到了typescript，总结了一下需要注意的点和小技巧。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-06-25T17:03:40.081Z">
+<meta property="og:updated_time" content="2019-06-25T17:15:25.012Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TypeScript使用总结">
 <meta name="twitter:description" content="最近在项目中比较多的用到了typescript，总结了一下需要注意的点和小技巧。">
@@ -315,12 +315,10 @@
 <h4 id="遇到的坑"><a href="#遇到的坑" class="headerlink" title="遇到的坑"></a>遇到的坑</h4><h4 id="类型的使用"><a href="#类型的使用" class="headerlink" title="类型的使用"></a>类型的使用</h4><ol>
 <li><p>联合类型的使用<br>Dinner中要么有fish要么有meat时</p>
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// good</span></span><br><span class="line"><span class="keyword">interface</span> Dinner &#123;</span><br><span class="line">    fish?: <span class="built_in">string</span>,</span><br><span class="line">    meat?: <span class="built_in">string</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// better</span></span><br><span class="line"><span class="keyword">type</span> Dinner = &#123;</span><br><span class="line">    fish: <span class="built_in">string</span>,</span><br><span class="line">&#125; | &#123;</span><br><span class="line">    meat: <span class="built_in">string</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>类型断言的使用<br>下面的代码不会提示错误，在运行时才会报错<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> str;</span><br><span class="line"><span class="keyword">let</span> foo: <span class="built_in">number</span> = (str <span class="keyword">as</span> <span class="built_in">string</span>).length;</span><br><span class="line"><span class="keyword">let</span> foo2: <span class="built_in">number</span> = (&lt;<span class="built_in">string</span>&gt;str).length;</span><br></pre></td></tr></table></figure>
-
 </li>
-</ol>
+<li><p>类型断言的使用<br>下面的代码不会提示错误，在运行时才会报错</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> str;</span><br><span class="line"><span class="keyword">let</span> foo: <span class="built_in">number</span> = (str <span class="keyword">as</span> <span class="built_in">string</span>).length;</span><br><span class="line"><span class="keyword">let</span> foo2: <span class="built_in">number</span> = (&lt;<span class="built_in">string</span>&gt;str).length;</span><br></pre></td></tr></table></figure>
+
 </li>
 </ol>
 <h4 id="类的设计和拆分"><a href="#类的设计和拆分" class="headerlink" title="类的设计和拆分"></a>类的设计和拆分</h4><h4 id="小技巧"><a href="#小技巧" class="headerlink" title="小技巧"></a>小技巧</h4><ol>
