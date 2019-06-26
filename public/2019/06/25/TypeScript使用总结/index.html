@@ -87,10 +87,14 @@
 <meta property="og:site_name" content="倚阑听风">
 <meta property="og:description" content="最近在项目中比较多的用到了typescript，总结了一下需要注意的点和小技巧。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-06-26T02:22:37.000Z">
+<meta property="og:image" content="http://blog.gefei.fun/2019/06/25/TypeScript使用总结/jest报错.png">
+<meta property="og:image" content="http://blog.gefei.fun/2019/06/25/TypeScript使用总结/注释提示.png">
+<meta property="og:image" content="http://blog.gefei.fun/2019/06/25/TypeScript使用总结/注释标记.png">
+<meta property="og:updated_time" content="2019-06-26T13:10:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TypeScript使用总结">
 <meta name="twitter:description" content="最近在项目中比较多的用到了typescript，总结了一下需要注意的点和小技巧。">
+<meta name="twitter:image" content="http://blog.gefei.fun/2019/06/25/TypeScript使用总结/jest报错.png">
 
 
 
@@ -322,18 +326,70 @@
       
         <h3 id="最近在项目中比较多的用到了typescript，总结了一下需要注意的点和小技巧。"><a href="#最近在项目中比较多的用到了typescript，总结了一下需要注意的点和小技巧。" class="headerlink" title="最近在项目中比较多的用到了typescript，总结了一下需要注意的点和小技巧。"></a>最近在项目中比较多的用到了typescript，总结了一下需要注意的点和小技巧。</h3><hr>
 <a id="more"></a>
-<h4 id="遇到的坑"><a href="#遇到的坑" class="headerlink" title="遇到的坑"></a>遇到的坑</h4><h4 id="类型的使用"><a href="#类型的使用" class="headerlink" title="类型的使用"></a>类型的使用</h4><ol>
-<li><p>联合类型的使用<br>Dinner中要么有fish要么有meat时</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// good</span></span><br><span class="line"><span class="keyword">interface</span> Dinner &#123;</span><br><span class="line">    fish?: <span class="built_in">string</span>,</span><br><span class="line">    meat?: <span class="built_in">string</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// better</span></span><br><span class="line"><span class="keyword">type</span> Dinner = &#123;</span><br><span class="line">    fish: <span class="built_in">string</span>,</span><br><span class="line">&#125; | &#123;</span><br><span class="line">    meat: <span class="built_in">string</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>类型断言的使用<br>下面的代码不会提示错误，在运行时才会报错</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> str;</span><br><span class="line"><span class="keyword">let</span> foo: <span class="built_in">number</span> = (str <span class="keyword">as</span> <span class="built_in">string</span>).length;</span><br><span class="line"><span class="keyword">let</span> foo2: <span class="built_in">number</span> = (&lt;<span class="built_in">string</span>&gt;str).length;</span><br></pre></td></tr></table></figure>
+<h4 id="遇到的坑"><a href="#遇到的坑" class="headerlink" title="遇到的坑"></a>遇到的坑</h4><ol>
+<li><p>bable和ts的配置项和模块规范导致的问题<br> 在项目中把一些历史代码由js改造为ts后，某些单元测试会无法跑通，如下。</p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span>;</span><br><span class="line">Vue.directive(....);</span><br></pre></td></tr></table></figure>
 
+ <img src="/2019/06/25/TypeScript使用总结/jest报错.png">
+<p> 原因是ts对CommonJS/AMD/UMD都采取了和ES6 modules一样的处理方式，如</p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// you wrote</span></span><br><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> foo <span class="keyword">from</span> <span class="string">'foo'</span>;</span><br><span class="line"><span class="comment">// treated as equivalent to</span></span><br><span class="line"><span class="keyword">const</span> foo = <span class="built_in">require</span>(<span class="string">"foo"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// you wrote</span></span><br><span class="line"><span class="keyword">import</span> bar <span class="keyword">from</span> <span class="string">'foo'</span>;</span><br><span class="line"><span class="comment">// treated as equivalent to</span></span><br><span class="line"><span class="keyword">const</span> bar = <span class="built_in">require</span>(<span class="string">"foo"</span>).default;</span><br></pre></td></tr></table></figure>
+
+<p> 而Vue没有默认导出，所以引发了上面的问题。<br> 相关github PR: <a href="https://github.com/Microsoft/TypeScript/pull/2460/" target="_blank" rel="noopener">https://github.com/Microsoft/TypeScript/pull/2460/</a><br> 这个问题在tsconfig.json 中设置 <code>esModuleInterop: true</code> 即可兼容。<br> 但是更改设置后会引发一些潜在的其他问题，因为在项目中使用了d3js并采用了如下引入方式</p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> d3 <span class="keyword">from</span> <span class="string">'d3'</span>;</span><br><span class="line">d3.event ... <span class="comment">// undefined</span></span><br><span class="line">d3.select ... <span class="comment">// undefined</span></span><br></pre></td></tr></table></figure>
+
+<p> 原因是</p>
+<blockquote>
+<p>If you use Babel, Webpack, or another ES6-to-ES5 bundler, be aware that the value of d3.event changes during an event! An import of d3.event must be a live binding, so you may need to configure the bundler to import from D3’s ES6 modules rather than from the generated UMD bundle; not all bundlers observe jsnext:main. Also beware of conflicts with the window.event global.</p>
+</blockquote>
+<p> 此时需要对d3的模块导入单独处理一些，使用<code>import {} from &#39;d3&#39;</code>或者<code>require</code>的形式引入即可。</p>
 </li>
 </ol>
-<h4 id="类的设计和拆分"><a href="#类的设计和拆分" class="headerlink" title="类的设计和拆分"></a>类的设计和拆分</h4><h4 id="小技巧"><a href="#小技巧" class="headerlink" title="小技巧"></a>小技巧</h4><ol>
-<li>在 /** */ 里输入 @ 可以看到丰富的注释选择进行清晰的注释</li>
-<li></li>
+<h4 id="类型的使用"><a href="#类型的使用" class="headerlink" title="类型的使用"></a>类型的使用</h4><ol>
+<li><p>联合类型的使用<br>Dinner中要么有fish要么有meat时</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// good</span></span><br><span class="line"><span class="keyword">interface</span> Dinner1 &#123;</span><br><span class="line">    fish?: <span class="built_in">string</span>,</span><br><span class="line">    meat?: <span class="built_in">string</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// better</span></span><br><span class="line"><span class="keyword">type</span> Dinner2 = &#123;</span><br><span class="line">    fish: <span class="built_in">string</span>,</span><br><span class="line">&#125; | &#123;</span><br><span class="line">    meat: <span class="built_in">string</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//i.e.</span></span><br><span class="line"><span class="keyword">let</span> a: Dinner1 = &#123;&#125; <span class="comment">// OK</span></span><br><span class="line"><span class="keyword">let</span> b: Dinner2 = &#123;&#125; <span class="comment">// Protected</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>类型断言的使用</p>
+<ul>
+<li>下面的代码不会提示错误，在运行时才会报错<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> str;</span><br><span class="line"><span class="keyword">let</span> foo: <span class="built_in">number</span> = (str <span class="keyword">as</span> <span class="built_in">string</span>).length;</span><br><span class="line"><span class="keyword">let</span> foo2: <span class="built_in">number</span> = (&lt;<span class="built_in">string</span>&gt;str).length;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>好处是可以解决掉恼人的错误提示，潜在的影响是如果断言与实际情况不符可能会引发运行时错误，个人建议最好不要用any做断言。</p>
+<ul>
+<li>用类型断言手动去除null和undedined<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = <span class="built_in">document</span>.getElementById(<span class="string">'foo'</span>);</span><br><span class="line">a.tagName <span class="comment">// 提示可能为null</span></span><br><span class="line">a!.tagName <span class="comment">// OK</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>*.d.ts的使用<br> 在类型定义文件中定义好用到的接口和类型，可以获得舒适的编码体验。</p>
+</li>
+</ol>
+<h4 id="类的设计和拆分"><a href="#类的设计和拆分" class="headerlink" title="类的设计和拆分"></a>类的设计和拆分</h4><ol>
+<li><p>面向对象的基本原则</p>
+<ul>
+<li><p>用组合代替继承（has a vs is a）</p>
+</li>
+<li><p>里氏替换原则</p>
+</li>
+<li><p>依赖倒转原则</p>
+</li>
+<li><p>单一职责原则<br>…….<br>在现在的实现中有些做的不好的地方，比如</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;EventEmitter&#125; <span class="keyword">from</span> <span class="string">'eventemitter3'</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">class</span> Foo <span class="keyword">extends</span> EventEmitter &#123;...&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此处不应该使用继承的方式来使用事件触发器，因为Foo类的目的不是扩展事件触发，而且这样实现增加了代码之间的耦合。<br>更好的方式是在Foo类中创建Emitter的实例来使用，或者在Foo的构造函数中进行注入。</p>
+</li>
+</ul>
+</li>
+<li><p>拆分</p>
+</li>
+</ol>
+<h4 id="小技巧"><a href="#小技巧" class="headerlink" title="小技巧"></a>小技巧</h4><ol>
+<li><p>在 /** */ 里输入 @ 可以看到丰富的注释选择进行清晰的注释</p>
+<img src="/2019/06/25/TypeScript使用总结/注释提示.png" title="注释提示"></li>
+<li><p>通过/** */形式的注释可以给接口或类型做标记，编辑器会有更好的提示</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** 树形结构节点坐标 */</span></span><br><span class="line"><span class="keyword">interface</span> Coordinate &#123;</span><br><span class="line">    readonly x: <span class="built_in">number</span>,</span><br><span class="line">    readonly y: <span class="built_in">number</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="/2019/06/25/TypeScript使用总结/注释标记.png" title="类型标记">
+</li>
 </ol>
 
       
@@ -374,6 +430,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/26/RxJs学习笔记/" rel="prev" title="RxJs学习笔记">
+                RxJs学习笔记 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -450,7 +510,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
