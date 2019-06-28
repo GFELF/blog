@@ -4,7 +4,7 @@ author: GFELF
 date: 2019-06-25 23:50:19
 tags: ts 
 ---
-### 最近在项目中比较多的用到了typescript，总结了一下需要注意的点和小技巧。
+### 最近在项目中比较多的用到了typescript，总结了一下遇到的坑和一些小技巧。
 
 ---
 <!-- more -->
@@ -77,6 +77,23 @@ tags: ts
    ```
 3. *.d.ts的使用
     在类型定义文件中定义好用到的接口和类型，可以获得舒适的编码体验。
+4. ts的结构类型(鸭子类型)系统
+    ```typescript
+    class Foo {
+        func(arg:number): number {
+            // do something
+        }
+        xxx() {}
+    }
+    class Bar {
+        func(arg:number): number { 
+            // do something
+        }
+    }
+    let instance: Bar = new Foo(); // OK
+    ```
+    TypeScript 比较的不是类型定义本身，而是类型定义的形状，即各种约束条件。
+    >One of TypeScript’s core principles is that type checking focuses on the shape that values have. This is sometimes called “duck typing” or “structural subtyping”.
 
 #### 类的设计和拆分
 1. 面向对象的基本原则
@@ -95,14 +112,14 @@ tags: ts
 2. 拆分
 
 #### 小技巧
-  1. 在 /** */ 里输入 @ 可以看到丰富的注释选择进行清晰的注释
-  {% asset_img 注释提示.png 注释提示 %}
-  2. 通过/** */形式的注释可以给接口或类型做标记，编辑器会有更好的提示
-  ```typescript
-    /** 树形结构节点坐标 */
-    interface Coordinate {
-        readonly x: number,
-        readonly y: number
-    }
-  ```
-  {% asset_img 注释标记.png 类型标记 %}
+1. 在 /** */ 里输入 @ 可以看到丰富的注释选择进行清晰的注释
+{% asset_img 注释提示.png 注释提示 %}
+2. 通过/** */形式的注释可以给接口或类型做标记，编辑器会有更好的提示
+```typescript
+/** 树形结构节点坐标 */
+interface Coordinate {
+    readonly x: number,
+    readonly y: number
+}
+```
+{% asset_img 注释标记.png 类型标记 %}
