@@ -8,7 +8,7 @@ tags: [css, 圆角渐变, border, 透明]
 ### 最近项目中遇到一个这样的需求，如下图红框部分，需要一个带圆角的渐变色边框，而且中间的文字部分是一个半透明背景，需要露出body的渐变背景色
 ---
 <!-- more -->
-{% asset_img 圆角渐变.jpg 圆角渐变边框 %}
+{% asset_img 圆角渐变边框.jpg 圆角渐变边框 %}
 * 首先想到的方案是使用border-image做渐变，但是border-image存在时，border-radius是不会生效的，因为：
     > A box's backgrounds, but not its border-image, are clipped to the appropriate curve (as determined by ‘background-clip’). Other effects that clip to the border or padding edge (such as ‘overflow’ other than ‘visible’) also must clip to the curve. The content of replaced elements is always trimmed to the content edge curve. Also, the area outside the curve of the border edge does not accept mouse events on behalf of the element.
 * 然后考虑使用一个外层div或者伪元素设置渐变背景来模拟边框，然后内层div作为背景并留出border的宽度，但是这样比较繁琐，而且无法实现content区域半透明露出body的效果；
