@@ -2,7 +2,7 @@
 title: TypeScript使用总结
 author: GFELF
 date: 2019-06-25 23:50:19
-tags: ts 
+tags: [javascript, typescript]
 ---
 ### 最近在项目中比较多的用到了typescript，总结了一下遇到的坑和一些小技巧。
 
